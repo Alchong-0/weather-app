@@ -5,14 +5,24 @@ import { APIKEY } from "../apikey";
 const location = document.getElementById("location");
 const submitFormBtn = document.getElementById("submitForm");
 
+const content = document.getElementById("content");
+const cityDisplay = document.getElementById("city");
+const coordinatesDisplay = document.getElementById("coordinates");
+const tempDisplay = document.getElementById("temp");
+const conditionsDisplay = document.getElementById("conditions");
+
 submitFormBtn.addEventListener("click", (event) => {
     event.preventDefault();
     callAsync(location.value);
 });
 
 async function callAsync(location) {
-    console.log(await locationToAPI(location));
+    let weatherInfo = await locationToAPI(location);
     // Display information in html
+    cityDisplay.innerHTML = location;
+    coordinatesDisplay.innerHTML = `${weatherInfo.latitude}, ${weatherInfo.longitude}`;
+    tempDisplay.innerHTML = `Current Temperature: ${weatherInfo.temp}, Feels Like: ${weatherInfo.feelslike}`;
+    conditionsDisplay.innerHTML = `Conditions: ${weatherInfo.conditions}, Precipitation: ${weatherInfo.precip}`;
 }
 
 async function locationToAPI(location) {
