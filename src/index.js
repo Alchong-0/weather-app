@@ -13,16 +13,29 @@ const conditionsDisplay = document.getElementById("conditions");
 
 submitFormBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    callAsync(location.value);
+    setLoading();
+    callAsync(location.value.trim());
+    location.value = "";
 });
 
+function setLoading() {
+    cityDisplay.innerHTML = "Loading...";
+    coordinatesDisplay.innerHTML = "";
+    tempDisplay.innerHTML = "";
+    conditionsDisplay.innerHTML = "";
+}
+
 async function callAsync(location) {
-    let weatherInfo = await locationToAPI(location);
-    // Display information in html
-    cityDisplay.innerHTML = location;
-    coordinatesDisplay.innerHTML = `${weatherInfo.latitude}, ${weatherInfo.longitude}`;
-    tempDisplay.innerHTML = `Current Temperature: ${weatherInfo.temp}, Feels Like: ${weatherInfo.feelslike}`;
-    conditionsDisplay.innerHTML = `Conditions: ${weatherInfo.conditions}, Precipitation: ${weatherInfo.precip}`;
+    try {
+        let weatherInfo = await locationToAPI(location);
+        // Display information in html
+        cityDisplay.innerHTML = weatherInfo.address;
+        coordinatesDisplay.innerHTML = `${weatherInfo.latitude}, ${weatherInfo.longitude}`;
+        tempDisplay.innerHTML = `Current Temperature: ${weatherInfo.temp}°F, Feels Like: ${weatherInfo.feelslike}°F`;
+        conditionsDisplay.innerHTML = weatherInfo.conditions;
+    } catch(err) {
+        cityDisplay.innerHTML = "Location data could not be found.";
+    }
 }
 
 async function locationToAPI(location) {
@@ -35,12 +48,13 @@ async function locationToAPI(location) {
 
 function processJSON(JSONdata) {
     let weatherInfo = {
-        conditions: JSONdata.currentConditions.conditions,
+        conditions: JSONdata.description,
         feelslike: JSONdata.currentConditions.feelslike,
-        precip: JSONdata.currentConditions.precip,
         temp: JSONdata.currentConditions.temp,
         latitude: JSONdata.latitude,
-        longitude: JSONdata.longitude
+        longitude: JSONdata.longitude,
+        address: JSONdata.resolvedAddress
     }
+    console.log(JSONdata);
     return weatherInfo;
 }

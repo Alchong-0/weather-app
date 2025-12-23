@@ -6,9 +6,8 @@
     <body>
         
         <form>
-            <label for="location">Enter a location:</label><br>
-            <input type="text" id="location" name="location" required>
-            <input type="submit" id="submitForm" value="🔎">
+            <input aria-label="Search Bar" type="text" id="location" name="location" placeholder="Enter a location/Zip Code/Coordinates" required/>
+            <button type="submit" id="submitForm">🔎</button>
         </form>
         <div id="content">
             <h1 id="city"></h1>
